@@ -392,6 +392,49 @@ public:
         }
     }
 
+    // 注销信息
+    void delete_user() {
+        if (current_user_id != -1) {
+            cout << "请先退出当前账号" << endl;
+            return;
+        }
+
+        i64 id;
+        cout << "请输入要注销的学号: ";
+        cin >> id;
+
+        // 检查借书人是否存在
+        if (readers.count(id) == 0) {
+            cout << "该借书人不存在" << endl;
+            return;
+        }
+
+        // 检查是否有未归还图书
+        bool has_unreturned = false;
+        for (const auto& record : borrow_records) {
+            if (record.student_id == id && !record.returned) {
+                has_unreturned = true;
+                break;
+            }
+        }
+
+        if (has_unreturned) {
+            cout << "该借书人有未归还的图书，不能注销" << endl;
+            return;
+        }
+
+        cout << "即将执行注销操作，姓名: " << readers[id].name << ", 学号: " << id << endl;
+        for (auto it = borrow_records.begin(); it != borrow_records.end(); ) {
+            if (it -> student_id == id) {
+                it = borrow_records.erase(it);
+            } else {
+                ++it;
+            }
+        }
+        readers.erase(id);
+        cout << "注销成功" << endl;
+    }
+
     void menu() {
         load_books();
         load_readers();
@@ -401,7 +444,7 @@ public:
             cout << "\n=== 图书管理系统 ===\n";
             cout << "1. 添加图书\n2. 显示图书\n3. 借书人注册\n4. 显示借书人\n";
             cout << "5. 登录\n6. 借阅\n7. 还书\n8. 保存所有数据\n";
-            cout << "9. 退出登录\n10. 图书查询\n0. 退出系统\n";
+            cout << "9. 退出登录\n10. 图书查询\n11. 借书人注销\n0. 退出系统\n";
             cout << "请输入选项: ";
             cin >> choice;
             switch (choice) {
@@ -447,6 +490,9 @@ public:
                     } else if (search_choice == 2) {
                         search_by_author();
                     }
+                    break;
+                case 11:
+                    delete_user();
                     break;
                 case 0:
                     cout << "退出系统\n";
