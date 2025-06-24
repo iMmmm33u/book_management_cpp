@@ -239,12 +239,28 @@ public:
         cin >> bid;
         for (auto& record : borrow_records) {
             if (record.book_id == bid && record.student_id == current_user_id && !record.returned) {
-                record.returned = true;
-                record.return_date = current_time();
                 double fee = calculate_overdue_fee(record);
                 if (fee > 0) {
-                    cout << "请支付超期费用: " << fee << "元" << endl;
+                    cout << "需支付超期费用: " << fee << "元" << endl;
+
+                    while (true) {
+                        cout << "请支付(输入支付金额，0表示取消): ";
+                        double payment;
+                        cin >> payment;
+
+                        if (payment == 0) {
+                            cout << "已取消归还" << endl;
+                            return;
+                        } else {
+                            if (payment == fee) {
+                                cout << "支付成功!" << endl;
+                                break;
+                            }
+                        }
+                    }
                 }
+                record.returned = true;
+                record.return_date = current_time();
                 books[bid].available = true;
                 auto& borrowed = readers[current_user_id].borrowed_books;
                 borrowed.erase(remove(borrowed.begin(), borrowed.end(), bid), borrowed.end());
