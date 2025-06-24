@@ -132,6 +132,44 @@ public:
         return overdue_days * extra_per_day;
     }
 
+    // 根据书名查询
+    void search_by_title() {
+        string name;
+        cout << "请输入书名: ";
+        cin.ignore();
+        getline(cin, name);
+
+        bool found = false;
+        for (const auto& [id, book] : books) {
+            if (book.title == name) {
+                book.display();
+                found = true;
+            }
+        }
+
+        if (!found) {
+            cout << "未查询到此书籍" << endl;
+        }
+    }
+
+    void search_by_author() {
+        string name;
+        cout << "请输入作者名称: ";
+        cin.ignore();
+        getline(cin, name);
+
+        bool found = false;
+        for (const auto& [id, book] : books) {
+            if (book.author == name) {
+                book.display();
+                found = true;
+            }
+        }
+        if (!found) {
+            cout << "未找到此书籍" << endl;
+        }
+    }
+
     void add_book() {
         Book b;
         cout << "输入书名: ";
@@ -363,7 +401,7 @@ public:
             cout << "\n=== 图书管理系统 ===\n";
             cout << "1. 添加图书\n2. 显示图书\n3. 借书人注册\n4. 显示借书人\n";
             cout << "5. 登录\n6. 借阅\n7. 还书\n8. 保存所有数据\n";
-            cout << "9. 退出登录\n0. 退出系统\n";
+            cout << "9. 退出登录\n10. 图书查询\n0. 退出系统\n";
             cout << "请输入选项: ";
             cin >> choice;
             switch (choice) {
@@ -396,6 +434,19 @@ public:
                     break;
                 case 9:
                     logout();
+                    break;
+                case 10:
+                    int search_choice;
+                    cout << "\n=== 图书查询 ===" << endl;
+                    cout << "1. 按书名查询\n2. 按作者查询\n0. 返回\n";
+                    cout << "请选择查询方式: ";
+                    cin >> search_choice;
+
+                    if (search_choice == 1) {
+                        search_by_title();
+                    } else if (search_choice == 2) {
+                        search_by_author();
+                    }
                     break;
                 case 0:
                     cout << "退出系统\n";
