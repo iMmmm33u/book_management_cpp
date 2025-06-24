@@ -506,6 +506,46 @@ public:
         } while (choice != 0);
     }
 
+    // 根据学号查询借阅人
+    void search_reader_by_id() {
+        i64 id;
+        cout << "请输入要查询的学号: ";
+        cin >> id;
+
+        if (readers.count(id)) {
+            readers[id].display();
+
+            // 显示借阅记录
+            cout << "\n借阅记录: " << endl;
+            for (const auto& record : borrow_records) {
+                if (record.student_id == id) {
+                    record.display();
+                }
+            }
+        } else {
+            cout << "未查询到该学号" << endl;
+        }
+    }
+
+    // 按姓名查询
+    void search_reader_by_name() {
+        string name;
+        cout << "请输入要查询的姓名: ";
+        cin.ignore();
+        getline(cin, name);
+
+        bool found = false;
+        for (const auto& [id, reader] : readers) {
+            if (reader.name == name) {
+                reader.display();
+                found = true;
+            }
+        }
+        if (!found) {
+            cout << "未查询到此借阅人" << endl;
+        }
+    }
+
     void menu() {
         load_books();
         load_readers();
@@ -515,7 +555,7 @@ public:
             cout << "\n=== 图书管理系统 ===\n";
             cout << "1. 添加图书\n2. 显示图书\n3. 借书人注册\n4. 显示借书人\n";
             cout << "5. 登录\n6. 借阅\n7. 还书\n8. 保存所有数据\n";
-            cout << "9. 退出登录\n10. 图书查询\n11. 借书人注销\n12. 修改借书人信息\n0. 退出系统\n";
+            cout << "9. 退出登录\n10. 图书查询\n11. 借书人注销\n12. 修改借书人信息\n13. 借书人查询\n0. 退出系统\n";
             cout << "请输入选项: ";
             cin >> choice;
             switch (choice) {
@@ -567,6 +607,19 @@ public:
                     break;
                 case 12:
                     modify();
+                    break;
+                case 13:
+                    int reader_search_choice;
+                    cout << "\n=== 借书人查询 ===" << endl;
+                    cout << "1. 按学号查询\n2. 按姓名查询\n0. 返回\n";
+                    cout << "请选择查询方式: ";
+                    cin >> reader_search_choice;
+
+                    if (reader_search_choice == 1) {
+                        search_reader_by_id();
+                    } else if (reader_search_choice == 2) {
+                        search_reader_by_name();
+                    }
                     break;
                 case 0:
                     cout << "退出系统\n";
