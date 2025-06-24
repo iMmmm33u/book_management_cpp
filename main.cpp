@@ -435,6 +435,77 @@ public:
         cout << "注销成功" << endl;
     }
 
+    // 借书人信息修改
+    void modify() {
+        if (current_user_id != -1) {
+            cout << "请先退出登录" << endl;
+            return;
+        }
+
+        i64 id;
+        cout << "请输入要修改的借书人学号: ";
+        cin >> id;
+
+        if (readers.count(id) == 0) {
+            cout << "该借书人不存在" << endl;
+            return;
+        }
+
+        Reader& reader = readers[id];
+        cout << "\n当前信息: " << endl;
+        reader.display();
+
+        int choice;
+        do {
+            cout << "\n === 修改选项 ===" << endl;
+            cout << "1. 修改姓名\n2. 修改性别\n3. 修改可借阅数量\n0. 返回\n";
+            cout << "请选择: ";
+            cin >> choice;
+            cin.ignore();
+
+            switch (choice) {
+                case 1: {
+                    string new_name;
+                    cout << "请输入新姓名(当前姓名: " << reader.name << "): ";
+                    getline(cin, new_name);
+                    reader.name = new_name;
+                    cout << "姓名已更新" << endl;
+                    break;
+                }
+                case 2: {
+                    string new_gender;
+                    cout << "请输入新的性别: ";
+                    cin >> new_gender;
+                    if (new_gender == "男" || new_gender == "女") {
+                        reader.gender = new_gender;
+                        cout << "性别已更新" << endl;
+                    } else {
+                        cout << "无效输入" << endl;
+                    }
+                    break;
+                }
+                case 3: {
+                    int new_max;
+                    cout << "请输入新的可借阅数量: ";
+                    cin >> new_max;
+                    if (new_max > 0 && new_max >= reader.borrowed_books.size()) {
+                        reader.max_books = new_max;
+                        cout << "可借阅数量已更新" << endl;
+                    } else {
+                        cout << "新数量不能小于已借书数量" << endl;
+                    }
+                    break;
+                }
+                case 0:
+                    cout << "返回主菜单" << endl;
+                    break;
+                default:
+                    cout << "无效输入" << endl;
+                    break;
+            }
+        } while (choice != 0);
+    }
+
     void menu() {
         load_books();
         load_readers();
@@ -444,7 +515,7 @@ public:
             cout << "\n=== 图书管理系统 ===\n";
             cout << "1. 添加图书\n2. 显示图书\n3. 借书人注册\n4. 显示借书人\n";
             cout << "5. 登录\n6. 借阅\n7. 还书\n8. 保存所有数据\n";
-            cout << "9. 退出登录\n10. 图书查询\n11. 借书人注销\n0. 退出系统\n";
+            cout << "9. 退出登录\n10. 图书查询\n11. 借书人注销\n12. 修改借书人信息\n0. 退出系统\n";
             cout << "请输入选项: ";
             cin >> choice;
             switch (choice) {
@@ -493,6 +564,9 @@ public:
                     break;
                 case 11:
                     delete_user();
+                    break;
+                case 12:
+                    modify();
                     break;
                 case 0:
                     cout << "退出系统\n";
